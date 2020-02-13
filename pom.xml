@@ -56,9 +56,109 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M4</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M4</version>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${basedir}/target/classes</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <argLine>-Dspring.profiles.active=test</argLine>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.2.4.RELEASE</version>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>2.2.1.RELEASE</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <!--
+                    <baseClassMappings>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*messaging.*</contractPackageRegex>
+                            <baseClassFQN>me.vukas.BaseClass</baseClassFQN>
+                        </baseClassMapping>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*controller.*</contractPackageRegex>
+                            <baseClassFQN>me.vukas.BaseClass</baseClassFQN>
+                        </baseClassMapping>
+                    </baseClassMappings>
+                    <basePackageForTests>me.vukas</basePackageForTests>
+                    -->
+                    <baseClassForTests>me.vukas.BaseClass</baseClassForTests>
+<!--
+                    <contractDependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>+</version>
+                    </contractDependency>
+-->
+                    <testFramework>JUNIT5</testFramework>
+                    <!--
+                    <contractsRepositoryUrl>pact://http://10.10.121.199:32817</contractsRepositoryUrl>
+                    <contractsMode>REMOTE</contractsMode>
+                    <testMode>EXPLICIT</testMode>
+                    -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>convert-dsl-to-pact</id>
+                        <phase>process-test-classes</phase>
+                        <configuration>
+                            <classpathScope>test</classpathScope>
+                            <mainClass>
+                                org.springframework.cloud.contract.verifier.util.ToFileContractsTransformer
+                            </mainClass>
+                            <arguments>
+                                <argument>
+                                    org.springframework.cloud.contract.verifier.spec.pact.PactContractConverter
+                                </argument>
+                                <argument>${project.basedir}/target/pacts</argument>
+                                <argument>
+                                    ${project.basedir}/src/test/resources/contracts
+                                </argument>
+                            </arguments>
+                        </configuration>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>au.com.dius</groupId>
+                <artifactId>pact-jvm-provider-maven</artifactId>
+                <version>4.0.5</version>
+                <configuration>
+                    <pactDirectory>${project.basedir}/target/pacts</pactDirectory> <!-- Defaults to ${project.build.directory}/pacts -->
+                    <pactBrokerUrl>http://10.10.121.199:32817</pactBrokerUrl>
+                    <projectVersion>1.0.100</projectVersion> <!-- Defaults to ${project.version} -->
+                    <trimSnapshot>true</trimSnapshot> <!-- Defaults to false -->
+                    <skipPactPublish>false</skipPactPublish> <!-- Defaults to false -->
+                </configuration>
             </plugin>
         </plugins>
     </build>
