@@ -1,6 +1,5 @@
 package me.vukas.controller;
 
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
 @Value

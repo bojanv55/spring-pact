@@ -1,0 +1,8 @@
+name: "Some Consumer___Producer API___some test"
+description: "should return SampleDto"
+request:
+  method: GET
+  url: /list/bojan
+response:
+  status: 200
+  bodyFromFile: response.json
