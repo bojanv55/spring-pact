@@ -118,6 +118,13 @@
                     <testMode>EXPLICIT</testMode>
                     -->
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.cloud</groupId>
+                        <artifactId>spring-cloud-contract-pact</artifactId>
+                        <version>2.2.1.RELEASE</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
